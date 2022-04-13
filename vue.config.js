@@ -1,3 +1,6 @@
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 const path = require('path')
 
 function resolve(dir) {
@@ -19,5 +22,26 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
+  },
+  configureWebpack: {
+    plugins: [
+      AutoImport({
+        resolvers: [ElementPlusResolver()]
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()]
+      })
+    ]
+  },
+  css: {
+    loaderOptions: {
+      stylus: {
+        // 全局引用变量和 mixin
+        import: [
+          '~@/assets/stylus/mixin.styl',
+          '~@/assets/stylus/variable.styl'
+        ]
+      }
+    }
   }
 }
