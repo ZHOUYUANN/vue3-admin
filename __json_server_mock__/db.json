@@ -1,0 +1,38 @@
+{
+  "login": {
+    "success": true,
+    "code": 0,
+    "message": "成功",
+    "data": {
+      "token": "123456"
+    }
+  },
+  "userinfo": {
+    "success": true,
+    "code": 0,
+    "message": "获取用户信息成功",
+    "data": {
+      "avatar": "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3835858067,383604916&fm=26&gp=0.jpg",
+      "id": "a123456",
+      "permission": {
+        "menus": [
+          "userManage",
+          "roleList",
+          "permissionList",
+          "articleRanking",
+          "articleCreate"
+        ]
+      },
+      "role": [
+        {
+          "id": "1",
+          "title": "超级管理员"
+        }
+      ],
+      "title": "超级管理员",
+      "username": "super-admin",
+      "_id": "111a222"
+    }
+  },
+  "profile": { "name": "typicode" }
+}
