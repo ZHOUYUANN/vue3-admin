@@ -4,6 +4,10 @@ const routes = [
   {
     path: '/',
     component: () => import('@/layout')
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login')
   }
 ]
 
