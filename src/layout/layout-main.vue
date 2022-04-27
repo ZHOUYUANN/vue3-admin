@@ -8,16 +8,7 @@
       </ul>
     </div>
     <div class="main-wrapper">
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
-      <p>1</p>
+      <router-view></router-view>
     </div>
   </main>
 </template>
@@ -32,10 +23,11 @@
   background #f0f0f0
   .main-tag
     width 100%
-    height 32px
+    height 36px
     display flex
     align-items center
-    box-shadow 0 5px 5px #ddd
+    box-shadow 0 3px 5px #ddd
+    border-left 1px solid #e5e9ec
     background #fff
     box-sizing border-box
     ul
@@ -43,8 +35,8 @@
       justify-content center
       align-items center
       li
-        height 26px
-        line-height 26px
+        height 30px
+        line-height 30px
         padding 0 8px
         border 1px solid #f1f1f1
         font-size 12px

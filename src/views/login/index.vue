@@ -20,12 +20,13 @@
             v-model="loginForm.password"
             :type="flag ? 'text' : 'password'"
             placeholder="请输入密码"
+            @keyup.enter="handleSubmit"
           ></el-input>
           <span class="login-wrapper__svg eye" @click="handleToggle">
             <svg-icon :icon="flag ? 'eye-open' : 'eye'"></svg-icon>
           </span>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <span class="login-wrapper__svg">
             <svg-icon icon="verify"></svg-icon>
           </span>
@@ -33,16 +34,19 @@
             v-model="loginForm.code"
             type="text"
             placeholder="请输入验证码"
+            @keyup.enter="handleSubmit"
           ></el-input>
           <img-verify
+            ref="verifyRef"
             :height="38"
             :width="100"
-            @getImgCode="getImgCode"
+            @success="getImgCodeSuccess"
           ></img-verify>
         </el-form-item>
       </el-form>
       <el-button type="primary" :loading="isLoading" @click="handleSubmit">
-        登录
+        <template v-if="isLoading">登录中..</template>
+        <template v-else>登录</template>
       </el-button>
     </div>
   </div>
@@ -50,13 +54,13 @@
 
 <script setup>
 import { ref } from 'vue'
-import { rules } from './config'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
+import { ElMessage } from 'element-plus'
 import ImgVerify from '@/components/img-verify'
 
 // 验证码
-const code = ref('')
+const imgCode = ref('')
 // 创建一个 ref 对象，用于控制登录表单的值
 const loginForm = ref({
   username: 'admin',
@@ -64,12 +68,35 @@ const loginForm = ref({
   code: ''
 })
 
+// 自定义验证码的正确性
+const validateCode = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请输入验证码'))
+  } else if (imgCode.value !== loginForm.value.code.toLowerCase()) {
+    callback(new Error('您输入的验证码不正确!'))
+  } else {
+    callback()
+  }
+}
+
 // 创建一个 ref 对象，用于控制登录表单的规则
-const loginRules = ref(rules)
+const loginRules = ref({
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+  ],
+  code: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { validator: validateCode, trigger: 'blur' }
+  ]
+})
 
 // 是否显示密码
 const flag = ref(false)
-
 // 点击切换密码显示状态
 function handleToggle() {
   flag.value = !flag.value
@@ -77,32 +104,40 @@ function handleToggle() {
 
 // 是否显示登录按钮的 loading
 const isLoading = ref(false)
+// 获取验证码组件
+const verifyRef = ref(null)
 // 登录提交 form
 const loginFormRef = ref(null)
 // 获取用户的 store 对象
-const user = useUserStore()
+const userStore = useUserStore()
 // 获取路由对象
 const router = useRouter()
 // 点击登录按钮
 function handleSubmit() {
   isLoading.value = true
   // 判断表单是否通过验证
-  loginFormRef.value.validate((valid) => {
-    if (valid && code.value === loginForm.value.code) {
-      user.userLogin(loginForm.value).then(() => {
-        isLoading.value = false
-        // 跳转到首页
-        router.push('/')
-      })
+  loginFormRef.value.validate(async (valid) => {
+    if (imgCode.value !== loginForm.value.code.toLowerCase()) {
+      isLoading.value = false
+      // 从新刷新验证码
+      verifyRef.value.draw()
+      return ElMessage.error('验证码错误')
+    }
+    if (valid) {
+      await userStore.userLogin(loginForm.value)
+      isLoading.value = false
+      // 跳转到首页
+      router.replace('/')
     } else {
+      ElMessage.error('表单验证失败')
       isLoading.value = false
     }
   })
 }
 
 // 设置验证码
-function getImgCode(code) {
-  code.value = code
+function getImgCodeSuccess(code) {
+  imgCode.value = code.toLowerCase()
 }
 </script>
 
@@ -125,7 +160,7 @@ function getImgCode(code) {
       margin-bottom 30px
       text-align center
       font-size 20px
-    /deep/.el-input
+    :deep(.el-input)
       height 38px
       flex 1
       input

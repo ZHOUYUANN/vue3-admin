@@ -10,22 +10,31 @@
       <h1>冬天里的向日葵11</h1>
     </div>
     <nav class="header-nav">
-      <div class="header-nav__hamburger" @click="toggle">
+      <div class="header-nav__hamburger" @click="appStore.toggleSide()">
         <svg-icon icon="hamburger-opened"></svg-icon>
       </div>
       <ul>
-        <li>2</li>
         <li>
-          <el-dropdown>
+          <svg-icon icon="search"></svg-icon>
+        </li>
+        <li>
+          <svg-icon icon="fullscreen"></svg-icon>
+        </li>
+        <li>
+          <el-dropdown trigger="click" @command="handleDraw">
+            <span>
+              admin
+              <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>View</el-dropdown-item>
-                <el-dropdown-item>Add</el-dropdown-item>
-                <el-dropdown-item>Delete</el-dropdown-item>
+                <el-dropdown-item command="website">访问网站</el-dropdown-item>
+                <el-dropdown-item command="logout" divided>
+                  退出登录
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <span>Tom</span>
         </li>
       </ul>
     </nav>
@@ -33,12 +42,19 @@
 </template>
 
 <script setup>
+import { ArrowDown } from '@element-plus/icons-vue'
+import { useUserStore } from '@/store/user'
 import { useAppStore } from '@/store/app'
 
-const useStore = useAppStore()
+const userStore = useUserStore()
+const appStore = useAppStore()
 
-function toggle() {
-  useStore.toggleSide()
+function handleDraw(value) {
+  if (value === 'website') {
+    window.open('https://www.baidu.com')
+  } else if (value === 'logout') {
+    userStore.userLogout()
+  }
 }
 </script>
 
@@ -72,11 +88,14 @@ function toggle() {
     display flex
     align-items center
     justify-content space-between
+    .header-nav__hamburger
+      font-size 20px
     ul
       height 100%
       display flex
       align-items center
+      padding 0 10px
       li
-        padding 0 20px
-        font-size 14px
+        padding 0 10px
+        font-size 18px
 </style>
