@@ -1,22 +1,35 @@
 import router from '@/router'
 import { useUserStore } from '@/store/user'
+import { useRouterStore } from '@/store/router'
+// import { useRouter } from 'vue-router'
 
 const whiteList = ['/login']
 
 // 设置路由拦截器
 router.beforeEach(async (to, from, next) => {
   // 获取用户信息
-  const user = useUserStore()
+  const userStore = useUserStore()
+  const routerStore = useRouterStore()
   // 判断用户是否登录
-  if (user.getUserToken) {
+  if (userStore.getUserToken) {
     // 用户已登录，则不允许进入 login
     // 如果进入的是 login 则跳转到首页，其他页面可以通过
     if (to.path === '/login') {
       next('/')
     } else {
       // 如果用户信息不存在，就通过 token 重新获取
-      if (!user.hasLogin) {
-        const { permission } = await user.getUserInfo()
+      if (!userStore.hasLogin) {
+        await userStore.getUserInfo()
+        const routers = await routerStore.getUserRouters()
+        // 动态添加路由
+        routers.forEach((item) => {
+          router.addRoute(item)
+        })
+
+        console.log(router.getRoutes())
+
+        // 添加完动态路由之后，需要在进行一次主动跳转
+        return next({ ...to, replace: true })
       }
       next()
     }

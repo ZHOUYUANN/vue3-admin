@@ -11,14 +11,14 @@ const http = axios.create({
 // 设置请求拦截器
 http.interceptors.request.use(
   (res) => {
-    const user = useUserStore()
-    if (user.token) {
+    const userStore = useUserStore()
+    if (userStore.token) {
       if (isCheckTimeout()) {
-        user.userLogout()
+        userStore.userLogout()
         ElMessage.error('登录超时，请重新登录')
         return Promise.reject(new Error('登录超时，请重新登录'))
       }
-      res.headers['X-Access-Token'] = user.token
+      res.headers['X-Access-Token'] = userStore.token
     }
     return res
   },
@@ -40,8 +40,21 @@ http.interceptors.response.use(
     }
   },
   (err) => {
-    if (err.response.status === 404) {
-      ElMessage.error('接口未找到，登录失败，请联系管理员')
+    switch (err.response && err.response.status) {
+      case 401:
+        ElMessage.error('登录超时，请重新登录')
+        break
+      case 403:
+        ElMessage.error('没有权限')
+        break
+      case 404:
+        ElMessage.error('请求资源不存在')
+        break
+      case 500:
+        ElMessage.error('服务器错误')
+        break
+      default:
+        ElMessage.error('未知错误')
     }
 
     return Promise.reject(err)

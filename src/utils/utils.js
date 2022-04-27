@@ -14,3 +14,11 @@ export const randomColor = (min, max) => {
     rgb(${randomNum(min, max)}, ${randomNum(min, max)}, ${randomNum(min, max)})
     `
 }
+
+// 判断数据是否为空
+export const isNull = (data) => {
+  if (!data) return true
+  if (JSON.stringify(data) === '{}') return true
+  if (JSON.stringify(data) === '[]') return true
+  return false
+}
