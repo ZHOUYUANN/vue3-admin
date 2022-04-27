@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "json-server": "json-server --watch __json_server_mock__/db.json"
+    "json-server": "json-server --watch __json_server_mock__/db.json --port 3004"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.0.1",
