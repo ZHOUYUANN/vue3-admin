@@ -9,7 +9,6 @@ export const useAppStore = defineStore({
   },
   actions: {
     toggleSide() {
-      console.log(2)
       this.isCollapse = !this.isCollapse
     }
   }
