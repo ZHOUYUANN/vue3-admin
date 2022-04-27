@@ -14,25 +14,86 @@
     "data": {
       "avatar": "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3835858067,383604916&fm=26&gp=0.jpg",
       "id": "a123456",
-      "permission": {
-        "menus": [
-          "userManage",
-          "roleList",
-          "permissionList",
-          "articleRanking",
-          "articleCreate"
-        ]
-      },
-      "role": [
-        {
-          "id": "1",
-          "title": "超级管理员"
-        }
-      ],
+      "role": ["admin"],
       "title": "超级管理员",
       "username": "super-admin",
       "_id": "111a222"
     }
   },
-  "profile": { "name": "typicode" }
+  "getRouters": {
+    "success": true,
+    "code": 0,
+    "message": "成功",
+    "data": {
+      "routers": [
+        {
+          "name": "System",
+          "path": "/system",
+          "component": "Layout",
+          "hidden": false,
+          "meta": {
+            "title": "系统管理",
+            "icon": "system"
+          },
+          "children": [
+            {
+              "name": "User",
+              "path": "user",
+              "component": "system/user",
+              "hidden": false,
+              "meta": {
+                "title": "用户管理",
+                "icon": "user"
+              }
+            },
+            {
+              "name": "Role",
+              "path": "role",
+              "component": "system/role",
+              "hidden": false,
+              "meta": {
+                "title": "角色管理",
+                "icon": "role"
+              }
+            },
+            {
+              "name": "Menu",
+              "path": "menu",
+              "component": "system/menu",
+              "hidden": false,
+              "meta": {
+                "title": "菜单管理",
+                "icon": "menu"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Monitor",
+          "path": "/monitor",
+          "component": "Layout",
+          "hidden": false,
+          "meta": {
+            "title": "系统监控",
+            "icon": "monitor"
+          },
+          "children": [
+            {
+              "name": "Online",
+              "path": "online",
+              "component": "monitor/online",
+              "hidden": false,
+              "meta": {
+                "title": "在线用户",
+                "icon": "online"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "profile": {
+    "name": "typicode"
+  }
 }
